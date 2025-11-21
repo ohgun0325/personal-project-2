@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NewsAccordion } from "@/components/news/NewsAccordion";
 import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
 import { newsRegions, newsSeedData } from "@/lib/news-data";
@@ -13,20 +13,26 @@ export function NewsSection() {
     const allNewsCount = news.all.length;
     const currentNewsCount = news[activeRegion]?.length ?? 0;
 
+    // 무한 루프 방지를 위한 ref
+    const hasHydrated = useRef(false);
+    const fetchedRegions = useRef<Set<string>>(new Set());
+
     useEffect(() => {
         setMounted(true);
     }, []);
 
     useEffect(() => {
         if (!mounted) return;
-        if (!allNewsCount) {
+        if (!hasHydrated.current && !allNewsCount) {
+            hasHydrated.current = true;
             hydrate(newsSeedData);
         }
     }, [mounted, allNewsCount, hydrate]);
 
     useEffect(() => {
         if (!mounted) return;
-        if (!currentNewsCount) {
+        if (!currentNewsCount && !fetchedRegions.current.has(activeRegion)) {
+            fetchedRegions.current.add(activeRegion);
             void fetchNews(activeRegion);
         }
     }, [mounted, activeRegion, currentNewsCount, fetchNews]);
