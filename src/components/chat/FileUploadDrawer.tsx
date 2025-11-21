@@ -12,13 +12,7 @@ export function FileUploadDrawer() {
         isDrawerOpen: state.isDrawerOpen,
         setDrawerOpen: state.setDrawerOpen,
     }));
-    const { uploadedFiles, uploadFiles, removeFile } = useChatStore(
-        (state) => ({
-            uploadedFiles: state.uploadedFiles,
-            uploadFiles: state.uploadFiles,
-            removeFile: state.removeFile,
-        }),
-    );
+    const uploadedFiles = useChatStore((state) => state.uploadedFiles);
 
     useEffect(() => {
         document.body.style.overflow = isDrawerOpen ? "hidden" : "unset";
@@ -49,10 +43,12 @@ export function FileUploadDrawer() {
                 (file) => file.type === "application/pdf",
             );
             if (files.length) {
+                // getState()로 안정적인 함수 참조 사용
+                const { uploadFiles } = useChatStore.getState();
                 uploadFiles(files);
             }
         },
-        [uploadFiles],
+        [],
     );
 
     const handleFileSelect = useCallback(
@@ -61,10 +57,12 @@ export function FileUploadDrawer() {
                 (file) => file.type === "application/pdf",
             );
             if (files.length) {
+                // getState()로 안정적인 함수 참조 사용
+                const { uploadFiles } = useChatStore.getState();
                 uploadFiles(files);
             }
         },
-        [uploadFiles],
+        [],
     );
 
     const formatFileSize = (bytes: number) => {
@@ -155,7 +153,11 @@ export function FileUploadDrawer() {
                                                 <p className="text-gray-500">{formatFileSize(file.size)}</p>
                                             </div>
                                             <button
-                                                onClick={() => removeFile(index)}
+                                                onClick={() => {
+                                                    // getState()로 안정적인 함수 참조 사용
+                                                    const { removeFile } = useChatStore.getState();
+                                                    removeFile(index);
+                                                }}
                                                 className="flex-shrink-0 rounded p-1.5 opacity-0 transition-all hover:bg-gray-200 group-hover:opacity-100"
                                             >
                                                 <X className="h-4 w-4 text-gray-600" />

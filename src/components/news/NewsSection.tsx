@@ -8,8 +8,7 @@ import { useNewsStore } from "@/store/news-store";
 
 export function NewsSection() {
     const [mounted, setMounted] = useState(false);
-    const { activeRegion, setActiveRegion, news, isLoading, fetchNews, hydrate } =
-        useNewsStore();
+    const { activeRegion, setActiveRegion, news, isLoading } = useNewsStore();
     const allNewsCount = news.all.length;
     const currentNewsCount = news[activeRegion]?.length ?? 0;
 
@@ -23,20 +22,22 @@ export function NewsSection() {
 
     useEffect(() => {
         if (!mounted) return;
+        // getState()로 안정적인 함수 참조 사용
+        const { hydrate } = useNewsStore.getState();
         if (!hasHydrated.current && !allNewsCount) {
             hasHydrated.current = true;
             hydrate(newsSeedData);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mounted, allNewsCount]);
 
     useEffect(() => {
         if (!mounted) return;
+        // getState()로 안정적인 함수 참조 사용
+        const { fetchNews } = useNewsStore.getState();
         if (!currentNewsCount && !fetchedRegions.current.has(activeRegion)) {
             fetchedRegions.current.add(activeRegion);
             void fetchNews(activeRegion);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mounted, activeRegion, currentNewsCount]);
 
     return (

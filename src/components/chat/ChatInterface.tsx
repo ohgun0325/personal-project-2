@@ -9,16 +9,18 @@ import { useChatStore } from "@/store/chat-store";
 
 export function ChatInterface() {
     const [input, setInput] = useState("");
-    const { generateProposal, isGenerating } = useChatStore();
+    const isGenerating = useChatStore((state) => state.isGenerating);
 
     const handleSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             if (!input.trim()) return;
+            // getState()로 안정적인 함수 참조 사용
+            const { generateProposal } = useChatStore.getState();
             await generateProposal(input);
             setInput("");
         },
-        [generateProposal, input],
+        [input],
     );
 
     const handleKeyDown = useCallback(
