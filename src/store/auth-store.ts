@@ -83,6 +83,8 @@ export const useAuthStore = create<AuthState>()(
         user,
         isAuthenticated,
       }),
+      // 서버 사이드에서 hydration 스킵하여 hydration mismatch 방지
+      skipHydration: true,
     },
   ),
 );

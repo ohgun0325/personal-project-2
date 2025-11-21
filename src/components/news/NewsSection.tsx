@@ -27,7 +27,8 @@ export function NewsSection() {
             hasHydrated.current = true;
             hydrate(newsSeedData);
         }
-    }, [mounted, allNewsCount, hydrate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mounted, allNewsCount]);
 
     useEffect(() => {
         if (!mounted) return;
@@ -35,7 +36,8 @@ export function NewsSection() {
             fetchedRegions.current.add(activeRegion);
             void fetchNews(activeRegion);
         }
-    }, [mounted, activeRegion, currentNewsCount, fetchNews]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mounted, activeRegion, currentNewsCount]);
 
     return (
         <div className="border-t border-gray-200 pt-12">
