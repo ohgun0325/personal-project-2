@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// 프로덕션에서는 환경 변수가 없으면 Next.js API 라우트를 사용 (상대 경로)
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "";
+
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
+  baseURL,
   timeout: 10000,
 });
 

@@ -19,6 +19,9 @@ export function NewsSection() {
     }, [allNewsCount, hydrate]);
 
     useEffect(() => {
+        // 클라이언트에서만 API 호출
+        if (typeof window === "undefined") return;
+        
         if (!currentNewsCount) {
             void fetchNews(activeRegion);
         }
