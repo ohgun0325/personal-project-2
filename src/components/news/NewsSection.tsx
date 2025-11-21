@@ -22,9 +22,11 @@ export function NewsSection() {
 
     useEffect(() => {
         if (!mounted) return;
+        if (hasHydrated.current) return;
+
         // getState()로 안정적인 함수 참조 사용
         const { hydrate, news: currentNews } = useNewsStore.getState();
-        if (!hasHydrated.current && currentNews.all.length === 0) {
+        if (currentNews.all.length === 0) {
             hasHydrated.current = true;
             hydrate(newsSeedData);
         }
@@ -32,13 +34,18 @@ export function NewsSection() {
 
     useEffect(() => {
         if (!mounted) return;
+
         // getState()로 안정적인 함수 참조 사용
         const { fetchNews, news: currentNews, activeRegion: currentRegion } = useNewsStore.getState();
         const regionNewsCount = currentNews[currentRegion]?.length ?? 0;
-        if (regionNewsCount === 0 && !fetchedRegions.current.has(currentRegion)) {
-            fetchedRegions.current.add(currentRegion);
-            void fetchNews(currentRegion);
+
+        // 이미 가져온 지역이거나 로딩 중이면 스킵
+        if (fetchedRegions.current.has(currentRegion) || regionNewsCount > 0) {
+            return;
         }
+
+        fetchedRegions.current.add(currentRegion);
+        void fetchNews(currentRegion);
     }, [mounted, activeRegion]);
 
     return (
