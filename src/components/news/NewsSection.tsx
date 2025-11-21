@@ -1,31 +1,35 @@
 'use client';
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NewsAccordion } from "@/components/news/NewsAccordion";
 import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
 import { newsRegions, newsSeedData } from "@/lib/news-data";
 import { useNewsStore } from "@/store/news-store";
 
 export function NewsSection() {
+    const [mounted, setMounted] = useState(false);
     const { activeRegion, setActiveRegion, news, isLoading, fetchNews, hydrate } =
         useNewsStore();
     const allNewsCount = news.all.length;
     const currentNewsCount = news[activeRegion]?.length ?? 0;
 
     useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
         if (!allNewsCount) {
             hydrate(newsSeedData);
         }
-    }, [allNewsCount, hydrate]);
+    }, [mounted, allNewsCount, hydrate]);
 
     useEffect(() => {
-        // 클라이언트에서만 API 호출
-        if (typeof window === "undefined") return;
-        
+        if (!mounted) return;
         if (!currentNewsCount) {
             void fetchNews(activeRegion);
         }
-    }, [activeRegion, currentNewsCount, fetchNews]);
+    }, [mounted, activeRegion, currentNewsCount, fetchNews]);
 
     return (
         <div className="border-t border-gray-200 pt-12">

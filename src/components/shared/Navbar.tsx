@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from "react";
 import { FileText, Paperclip } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,13 @@ import { useChatStore } from "@/store/chat-store";
 import { useUIStore } from "@/store/ui-store";
 
 export function Navbar() {
+    const [mounted, setMounted] = useState(false);
     const fileCount = useChatStore((state) => state.uploadedFiles.length);
     const toggleDrawer = useUIStore((state) => state.toggleDrawer);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     return (
         <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white px-8 py-4 shadow-sm">
@@ -26,7 +32,7 @@ export function Navbar() {
                 >
                     <Paperclip className="h-5 w-5" />
                     제안서 작성 도우미
-                    {fileCount > 0 && (
+                    {mounted && fileCount > 0 && (
                         <Badge className="ml-1 bg-[#0066CC] hover:bg-[#0052A3]">{fileCount}</Badge>
                     )}
                 </Button>

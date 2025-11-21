@@ -1,3 +1,5 @@
+'use client';
+
 import { ChatInterface } from "@/components/chat/ChatInterface";
 import { FileUploadDrawer } from "@/components/chat/FileUploadDrawer";
 import { NewsSection } from "@/components/news/NewsSection";
