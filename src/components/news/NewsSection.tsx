@@ -23,22 +23,23 @@ export function NewsSection() {
     useEffect(() => {
         if (!mounted) return;
         // getState()로 안정적인 함수 참조 사용
-        const { hydrate } = useNewsStore.getState();
-        if (!hasHydrated.current && !allNewsCount) {
+        const { hydrate, news: currentNews } = useNewsStore.getState();
+        if (!hasHydrated.current && currentNews.all.length === 0) {
             hasHydrated.current = true;
             hydrate(newsSeedData);
         }
-    }, [mounted, allNewsCount]);
+    }, [mounted]);
 
     useEffect(() => {
         if (!mounted) return;
         // getState()로 안정적인 함수 참조 사용
-        const { fetchNews } = useNewsStore.getState();
-        if (!currentNewsCount && !fetchedRegions.current.has(activeRegion)) {
-            fetchedRegions.current.add(activeRegion);
-            void fetchNews(activeRegion);
+        const { fetchNews, news: currentNews, activeRegion: currentRegion } = useNewsStore.getState();
+        const regionNewsCount = currentNews[currentRegion]?.length ?? 0;
+        if (regionNewsCount === 0 && !fetchedRegions.current.has(currentRegion)) {
+            fetchedRegions.current.add(currentRegion);
+            void fetchNews(currentRegion);
         }
-    }, [mounted, activeRegion, currentNewsCount]);
+    }, [mounted, activeRegion]);
 
     return (
         <div className="border-t border-gray-200 pt-12">

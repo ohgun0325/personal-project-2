@@ -29,9 +29,8 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   error: null,
   setActiveRegion: (region) => {
     set({ activeRegion: region });
-    if (get().news[region].length === 0) {
-      void get().fetchNews(region);
-    }
+    // fetchNews는 컴포넌트의 useEffect에서 처리하도록 변경
+    // 여기서 호출하면 무한 루프 발생 가능
   },
   fetchNews: async (region = get().activeRegion) => {
     // 서버 사이드에서는 실행하지 않음
