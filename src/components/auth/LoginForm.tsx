@@ -1,8 +1,8 @@
 'use client';
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth-store";
@@ -11,11 +11,25 @@ export function LoginForm() {
     const router = useRouter();
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
+    const [mounted, setMounted] = useState(false);
     const { login, isLoading } = useAuthStore((state) => ({
         login: state.login,
         isLoading: state.isLoading,
     }));
     const [error, setError] = useState<string | null>(null);
+
+    // 클라이언트에서만 auth store hydration 수행
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            useAuthStore.persist.rehydrate();
+            setMounted(true);
+        }
+    }, []);
+
+    // hydration이 완료될 때까지 렌더링 지연
+    if (!mounted) {
+        return null;
+    }
 
     const handleLogin = async () => {
         setError(null);

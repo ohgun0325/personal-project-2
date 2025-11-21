@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { useAuthStore } from "@/store/auth-store";
 
 // Zustand store를 사용하는 컴포넌트들을 클라이언트에서만 동적으로 로드
 // SSR을 완전히 비활성화하여 hydration mismatch 방지
@@ -21,6 +23,13 @@ const FileUploadDrawer = dynamic(() => import("@/components/chat/FileUploadDrawe
 });
 
 export default function Home() {
+  // 클라이언트에서만 auth store hydration 수행
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      useAuthStore.persist.rehydrate();
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
       <Navbar />
